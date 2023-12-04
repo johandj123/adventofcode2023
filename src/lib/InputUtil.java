@@ -3,7 +3,6 @@ package lib;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +30,7 @@ public class InputUtil {
     }
 
     public static List<Integer> splitIntoIntegers(String input) {
-        String[] parts = input.split("\\s+");
+        String[] parts = input.trim().split("\\s+");
         return Arrays.stream(parts).map(Integer::parseInt).collect(Collectors.toList());
     }
 }
