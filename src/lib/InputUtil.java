@@ -33,4 +33,9 @@ public class InputUtil {
         String[] parts = input.trim().split("\\s+");
         return Arrays.stream(parts).map(Integer::parseInt).collect(Collectors.toList());
     }
+
+    public static List<Long> splitIntoLongs(String input) {
+        String[] parts = input.trim().split("\\s+");
+        return Arrays.stream(parts).map(Long::parseLong).collect(Collectors.toList());
+    }
 }
