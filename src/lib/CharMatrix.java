@@ -46,6 +46,18 @@ public class CharMatrix {
         this(content.toArray(new String[0]), fill);
     }
 
+    public CharMatrix(int height, int width, char fill) {
+        this.content = new char[height][width];
+        for (int y = 0; y < height; y++) {
+            Arrays.fill(this.content[y], fill);
+        }
+        this.fill = fill;
+    }
+
+    public CharMatrix(int height, int width) {
+        this(height, width, '.');
+    }
+
     public int getWidth()
     {
         return content[0].length;
@@ -216,6 +228,11 @@ public class CharMatrix {
         public Position add(Position delta)
         {
             return new Position(x + delta.x, y + delta.y);
+        }
+
+        public Position add(int dx,int dy)
+        {
+            return new Position(x + dx, y + dy);
         }
 
         public List<Position> getNeighbours()
