@@ -8,6 +8,15 @@ public class CharMatrix {
     private char[][] content;
     private char fill;
 
+    public CharMatrix(CharMatrix charMatrix)
+    {
+        this.content = new char[charMatrix.content.length][];
+        for (int y = 0; y < content.length; y++) {
+            content[y] = Arrays.copyOf(charMatrix.content[y], charMatrix.content[y].length);
+        }
+        this.fill = charMatrix.fill;
+    }
+
     public CharMatrix(char[][] content, char fill) {
         this.content = content;
         this.fill = fill;
@@ -156,6 +165,21 @@ public class CharMatrix {
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CharMatrix that = (CharMatrix) o;
+        return fill == that.fill && Arrays.deepEquals(content, that.content);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(fill);
+        result = 31 * result + Arrays.deepHashCode(content);
+        return result;
     }
 
     @Override
