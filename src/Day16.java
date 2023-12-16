@@ -1,8 +1,12 @@
 import lib.CharMatrix;
+import lib.GraphUtil;
 import lib.InputUtil;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Day16 {
@@ -39,18 +43,7 @@ public class Day16 {
     }
 
     private static int countEnergized(Beam startBeam) {
-        List<Beam> startBeams = List.of(startBeam);
-        Set<Beam> seen = new HashSet<>(startBeams);
-        Deque<Beam> todo = new ArrayDeque<>(startBeams);
-        while (!todo.isEmpty()) {
-            Beam beam = todo.remove();
-            List<Beam> next = beam.getNext();
-            for (Beam nextBeam : next) {
-                if (seen.add(nextBeam)) {
-                    todo.add(nextBeam);
-                }
-            }
-        }
+        Set<Beam> seen = GraphUtil.reachable(startBeam, Beam::getNext);
 
         Set<CharMatrix.Position> positions = seen.stream()
                 .map(beam -> beam.position)

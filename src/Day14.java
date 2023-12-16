@@ -1,13 +1,10 @@
 import lib.CharMatrix;
 import lib.InputUtil;
+import lib.StepUtil;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Day14 {
-
-    public static final int CYCLES = 1000000000;
 
     public static void main(String[] args) throws IOException {
         first();
@@ -22,26 +19,7 @@ public class Day14 {
 
     private static void second() throws IOException {
         CharMatrix charMatrix = new CharMatrix(InputUtil.readAsLines("input14.txt"));
-        Map<CharMatrix, Integer> map = new HashMap<>();
-        int i = 0;
-        int cycleLength = -1;
-        while (i < CYCLES) {
-            map.put(charMatrix, i);
-            charMatrix = cycle(charMatrix);
-            i++;
-            Integer i1 = map.get(charMatrix);
-            if (i1 != null) {
-                cycleLength = i - i1;
-                break;
-            }
-        }
-        while (i + cycleLength <= CYCLES) {
-            i += cycleLength;
-        }
-        while (i < CYCLES) {
-            charMatrix = cycle(charMatrix);
-            i++;
-        }
+        charMatrix = StepUtil.performStepsWithCycleDetection(charMatrix, 1000000000, Day14::cycle);
         System.out.println(calculateLoad(charMatrix));
     }
 
