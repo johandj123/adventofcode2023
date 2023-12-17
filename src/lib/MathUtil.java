@@ -10,7 +10,7 @@ public class MathUtil {
     public static long gcd(long a,long b)
     {
         while (b != 0) {
-            long bnew = properModulo(a, b);
+            long bnew = Math.floorMod(a, b);
             a = b;
             b = bnew;
         }
@@ -34,15 +34,5 @@ public class MathUtil {
         return values.stream()
                 .reduce(MathUtil::lcm)
                 .orElseThrow();
-    }
-
-    public static long properModulo(long a,long b)
-    {
-        b = Math.abs(b);
-        if (a < 0) {
-            return b - ((-a) % b);
-        } else {
-            return a % b;
-        }
     }
 }
