@@ -1,4 +1,5 @@
 import lib.InputUtil;
+import lib.MathUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -63,10 +64,7 @@ public class Day8 {
         }
 
         List<Long> values = atozMap.values().stream().map(ks -> ks.steps).collect(Collectors.toList());
-        long second = values.get(0);
-        for (int i = 1; i < values.size(); i++) {
-            second = lcm(second, values.get(i));
-        }
+        long second = MathUtil.lcm(values);
         System.out.println(second);
     }
 
@@ -92,25 +90,5 @@ public class Day8 {
             current = right.get(current);
         }
         return current;
-    }
-
-    private static long lcm(long a, long b)
-    {
-        return (a * b) / gcd(a, b);
-    }
-
-    private static long gcd(long a, long b)
-    {
-        // Find Minimum of a and b
-        long result = Math.min(a, b);
-        while (result > 0) {
-            if (a % result == 0 && b % result == 0) {
-                break;
-            }
-            result--;
-        }
-
-        // Return gcd of a and b
-        return result;
     }
 }

@@ -11,7 +11,6 @@ public class StepUtil {
     public static <T> T performStepsWithCycleDetection(T start, int steps, Function<T, T> next) {
         T current = start;
         Map<T, Integer> map = new HashMap<>();
-        map.put(current, 0);
         int i = 0;
         int cycleLength = 0;
         while (i < steps) {
