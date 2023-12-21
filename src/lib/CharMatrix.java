@@ -276,6 +276,35 @@ public class CharMatrix {
             return result;
         }
 
+        public List<Position> getUnboundedNeighbours()
+        {
+            List<Position> result = new ArrayList<>();
+            for (Position delta : new Position[] {
+                    new Position(-1, 0),
+                    new Position(1, 0),
+                    new Position(0, -1),
+                    new Position(0, 1),
+            }) {
+                result.add(this.add(delta));
+            }
+            return result;
+        }
+
+        public List<Position> getWrapNeighbours()
+        {
+            List<Position> result = new ArrayList<>();
+            for (Position delta : new Position[] {
+                    new Position(-1, 0),
+                    new Position(1, 0),
+                    new Position(0, -1),
+                    new Position(0, 1),
+            }) {
+                Position next = this.add(delta);
+                result.add(next.wrap());
+            }
+            return result;
+        }
+
         @Override
         public String toString() {
             return String.format("(%d,%d)", x, y);
