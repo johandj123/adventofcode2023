@@ -53,59 +53,40 @@ public class Day5 {
     static class Mapping
     {
         long dest;
-        long start;
-        long length;
+        Interval src;
 
         Mapping(String s)
         {
             String[] sp = s.trim().split("\\s+");
             dest = Long.parseLong(sp[0]);
-            start = Long.parseLong(sp[1]);
-            length = Long.parseLong(sp[2]);
+            long start = Long.parseLong(sp[1]);
+            long length = Long.parseLong(sp[2]);
+            src = Interval.ofStartAndLength(start, length);
         }
 
         public Mapping(long dest, long start, long length) {
             this.dest = dest;
-            this.start = start;
-            this.length = length;
+            this.src = Interval.ofStartAndLength(start, length);
         }
 
         boolean inRange(long n)
         {
-            return (n >= start && n < limit());
+            return src.in(n);
         }
 
         private long limit() {
-            return start + length;
+            return src.getLimit();
         }
 
         long map(long n)
         {
-            return (n - start) + dest;
+            return (n - src.getStart()) + dest;
         }
 
         Interval map(Interval interval)
         {
-            long rstart = interval.getStart();
-            long rlength = interval.getLength();
-            if (rstart < start) {
-                long d = start - rstart;
-                rstart += d;
-                rlength -= d;
-                if (rlength <= 0) {
-                    return null;
-                }
-            }
-            // rstart >= start
-            long rlimit = rstart + rlength;
-            if (rlimit > limit()) {
-                long d = rlimit - limit();
-                rlength -= d;
-                if (rlength <= 0) {
-                    return null;
-                }
-            }
-            return Interval.ofStartAndLength(map(rstart), rlength);
+            Interval combined = Interval.and(src, interval);
+            return combined.isEmpty() ? null : Interval.ofStartAndLength(map(combined.getStart()), combined.getLength());
         }
     }
 
@@ -119,7 +100,7 @@ public class Day5 {
             for (int i = 1; i < sp.length; i++) {
                 mappings.add(new Mapping(sp[i]));
             }
-            mappings.sort(Comparator.comparing(mapping -> mapping.start));
+            mappings.sort(Comparator.comparing(mapping -> mapping.src.getStart()));
             fillGaps();
         }
 
@@ -127,7 +108,7 @@ public class Day5 {
             List<Mapping> mappings1 = new ArrayList<>();
             long current = 0;
             for (Mapping mapping : mappings) {
-                long length = mapping.start - current;
+                long length = mapping.src.getStart() - current;
                 if (length > 0) {
                     mappings1.add(new Mapping(current, current, length));
                 }
