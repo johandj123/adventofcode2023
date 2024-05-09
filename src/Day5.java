@@ -1,4 +1,5 @@
 import lib.InputUtil;
+import lib.Interval;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,34 +36,18 @@ public class Day5 {
     private static void second(List<Long> inputNumbers, List<AMap> maps) {
         List<Long> locations = new ArrayList<>();
         for (int i = 0; i < inputNumbers.size(); i += 2) {
-            List<Range> ranges = Collections.singletonList(new Range(inputNumbers.get(i), inputNumbers.get(i + 1)));
+            List<Interval> intervals = Collections.singletonList(Interval.ofStartAndLength(inputNumbers.get(i), inputNumbers.get(i + 1)));
             for (AMap map : maps) {
-                List<Range> nextRanges = new ArrayList<>();
-                for (Range range : ranges) {
-                    nextRanges.addAll(map.mapRange(range));
+                List<Interval> nextIntervals = new ArrayList<>();
+                for (Interval interval : intervals) {
+                    nextIntervals.addAll(map.mapInterval(interval));
                 }
-                ranges = nextRanges;
+                intervals = nextIntervals;
             }
-            locations.add(ranges.stream().map(range -> range.start).min(Comparator.comparing(x -> x)).orElseThrow());
+            locations.add(intervals.stream().map(Interval::getStart).min(Comparator.comparing(x -> x)).orElseThrow());
         }
         long second = locations.stream().min(Comparator.comparing(x -> x)).orElseThrow();
         System.out.println(second);
-    }
-
-    static class Range
-    {
-        long start;
-        long length;
-
-        public Range(long start, long length) {
-            this.start = start;
-            this.length = length;
-        }
-
-        long limit()
-        {
-            return start + length;
-        }
     }
 
     static class Mapping
@@ -99,10 +84,10 @@ public class Day5 {
             return (n - start) + dest;
         }
 
-        Range map(Range range)
+        Interval map(Interval interval)
         {
-            long rstart = range.start;
-            long rlength = range.length;
+            long rstart = interval.getStart();
+            long rlength = interval.getLength();
             if (rstart < start) {
                 long d = start - rstart;
                 rstart += d;
@@ -120,7 +105,7 @@ public class Day5 {
                     return null;
                 }
             }
-            return new Range(map(rstart), rlength);
+            return Interval.ofStartAndLength(map(rstart), rlength);
         }
     }
 
@@ -164,16 +149,16 @@ public class Day5 {
             return n;
         }
 
-        List<Range> mapRange(Range range)
+        List<Interval> mapInterval(Interval interval)
         {
-            List<Range> ranges = new ArrayList<>();
+            List<Interval> intervals = new ArrayList<>();
             for (Mapping mapping : mappings) {
-                Range newRange = mapping.map(range);
-                if (newRange != null) {
-                    ranges.add(newRange);
+                Interval newInterval = mapping.map(interval);
+                if (newInterval != null) {
+                    intervals.add(newInterval);
                 }
             }
-            return ranges;
+            return intervals;
         }
     }
 }
