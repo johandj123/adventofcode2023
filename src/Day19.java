@@ -1,4 +1,5 @@
 import lib.InputUtil;
+import lib.Interval;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -139,13 +140,13 @@ public class Day19 {
     }
 
     static class Mask {
-        Map<String, MaskPart> maskParts = new HashMap<>();
+        Map<String, Interval> maskParts = new HashMap<>();
 
         Mask() {
-            maskParts.put("x", new MaskPart());
-            maskParts.put("m", new MaskPart());
-            maskParts.put("a", new MaskPart());
-            maskParts.put("s", new MaskPart());
+            maskParts.put("x", Interval.ofClosed(1, 4000));
+            maskParts.put("m", Interval.ofClosed(1, 4000));
+            maskParts.put("a", Interval.ofClosed(1, 4000));
+            maskParts.put("s", Interval.ofClosed(1, 4000));
         }
 
         Mask(Mask o) {
@@ -153,77 +154,23 @@ public class Day19 {
         }
 
         long count() {
-            return maskParts.values().stream().mapToLong(MaskPart::count).reduce((a, b) -> a * b).orElseThrow();
+            return maskParts.values().stream().mapToLong(Interval::getLength).reduce((a, b) -> a * b).orElseThrow();
         }
 
         Mask apply(RulePart rulePart) {
             Mask mask = new Mask(this);
-            MaskPart maskPart = maskParts.get(rulePart.name).apply(rulePart.greater, rulePart.number);
-            mask.maskParts.put(rulePart.name, maskPart);
+            Interval partInterval = rulePart.greater ? Interval.ofClosed(rulePart.number + 1, 4000) : Interval.ofClosed(1, rulePart.number - 1);
+            Interval newInterval = Interval.and(maskParts.get(rulePart.name), partInterval);
+            mask.maskParts.put(rulePart.name, newInterval);
             return mask;
         }
 
         Mask applyInverse(RulePart rulePart) {
             Mask mask = new Mask(this);
-            MaskPart maskPart = maskParts.get(rulePart.name).applyInverse(rulePart.greater, rulePart.number);
-            mask.maskParts.put(rulePart.name, maskPart);
+            Interval partInterval = rulePart.greater ? Interval.ofClosed(1, rulePart.number) : Interval.ofClosed(rulePart.number, 4000);
+            Interval newInterval = Interval.and(maskParts.get(rulePart.name), partInterval);
+            mask.maskParts.put(rulePart.name, newInterval);
             return mask;
-        }
-
-        Mask applyInverse(List<RulePart> ruleParts) {
-            Mask mask = new Mask(this);
-            for (RulePart rulePart : ruleParts) {
-                MaskPart maskPart = maskParts.get(rulePart.name).applyInverse(rulePart.greater, rulePart.number);
-                mask.maskParts.put(rulePart.name, maskPart);
-            }
-            return mask;
-        }
-    }
-
-    static class MaskPart {
-        boolean[] b = new boolean[4000];
-
-        MaskPart() {
-            Arrays.fill(b, true);
-        }
-
-        MaskPart(MaskPart o) {
-            System.arraycopy(o.b, 0, b, 0, b.length);
-        }
-
-        MaskPart apply(boolean greater, int value) {
-            MaskPart maskPart = new MaskPart(this);
-            value--;
-            if (greater) {
-                for (int i = 0; i < value + 1; i++) {
-                    maskPart.b[i] = false;
-                }
-            } else {
-                for (int i = value; i < b.length; i++) {
-                    maskPart.b[i] = false;
-                }
-            }
-            return maskPart;
-        }
-
-        MaskPart applyInverse(boolean greater, int value) {
-            if (greater) {
-                // !x>value ; x<=value ; x<value+1
-                return apply(false, value + 1);
-            } else {
-                // !x<value : x>=value ; x>value-1
-                return apply(true, value - 1);
-            }
-        }
-
-        long count() {
-            long c = 0L;
-            for (int i = 0; i < b.length; i++) {
-                if (b[i]) {
-                    c++;
-                }
-            }
-            return c;
         }
     }
 }
