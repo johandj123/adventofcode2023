@@ -107,4 +107,39 @@ public class MathUtil {
 
         return x;
     }
+
+    public static void gaussianElimination(BigRational[][] A) {
+        int h = A.length;
+        int w = A[0].length;
+        int pivotCount = Math.min(w, h);
+        for (int pivot = 0; pivot < pivotCount; pivot++) {
+            for (int pivotRow = pivot; pivotRow < h; pivotRow++) {
+                if (!A[pivotRow][pivot].isZero()) {
+                    for (int i = 0; i < w; i++) {
+                        BigRational v = A[pivot][i];
+                        A[pivot][i] = A[pivotRow][i];
+                        A[pivotRow][i] = v;
+                    }
+                    break;
+                }
+            }
+            BigRational pivotValue = A[pivot][pivot];
+            if (pivotValue.isZero()) {
+                throw new IllegalStateException("Case where a column has no pivot is not handled in this implementation");
+            }
+            for (int col = 0; col < w; col++) {
+                A[pivot][col] = A[pivot][col].divide(pivotValue);
+            }
+            for (int row = 0; row < h; row++) {
+                if (row != pivot) {
+                    BigRational factor = A[row][pivot];
+                    if (!factor.isZero()) {
+                        for (int col = 0; col < w; col++) {
+                            A[row][col] = A[row][col].subtract(factor.multiply(A[pivot][col]));
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
