@@ -104,6 +104,24 @@ public class BigRational implements Comparable<BigRational> {
         return new BigRational(denominator, numerator);
     }
 
+    public BigRational floor() {
+        BigDecimal d = new BigDecimal(numerator).divide(new BigDecimal(denominator), 0, RoundingMode.FLOOR);
+        return new BigRational(d.toBigInteger(), BigInteger.ONE);
+    }
+
+    public BigRational ceil() {
+        BigDecimal d = new BigDecimal(numerator).divide(new BigDecimal(denominator), 0, RoundingMode.CEILING);
+        return new BigRational(d.toBigInteger(), BigInteger.ONE);
+    }
+
+    public BigInteger getNumerator() {
+        return numerator;
+    }
+
+    public BigInteger getDenominator() {
+        return denominator;
+    }
+
     public double doubleValue() {
         return new BigDecimal(numerator).divide(new BigDecimal(denominator), 32, RoundingMode.HALF_EVEN).doubleValue();
     }
