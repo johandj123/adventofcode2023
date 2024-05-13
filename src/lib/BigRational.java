@@ -73,7 +73,7 @@ public class BigRational implements Comparable<BigRational> {
         return numerator.signum() < 0;
     }
 
-    private boolean isIntegral() {
+    public boolean isIntegral() {
         return BigInteger.ONE.equals(denominator);
     }
 
