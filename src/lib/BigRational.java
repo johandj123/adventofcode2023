@@ -6,6 +6,9 @@ import java.math.RoundingMode;
 import java.util.Objects;
 
 public class BigRational implements Comparable<BigRational> {
+    private static final BigRational ZERO = new BigRational(0);
+    private static final BigRational ONE = new BigRational(1);
+
     private final BigInteger numerator;
     private final BigInteger denominator;
 
