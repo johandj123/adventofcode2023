@@ -49,11 +49,4 @@ public class Extrapolator {
     {
         return list.get(list.size() - 1);
     }
-
-    public static void main(String[] args) {
-        Extrapolator extrapolator = new Extrapolator(List.of(1L, 3L, 6L, 10L, 15L, 21L));
-        for (int i = 0; i < 10; i++) {
-            System.out.println(extrapolator.advance());
-        }
-    }
 }
